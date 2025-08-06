@@ -49,6 +49,7 @@ const loginController = asyncHandler(async (req: Request, res: Response) => {
       email: email,
     },
   });
+    
   if (!db_user?.dataValues) {
     throw new AppError("user does not exist", 404);
   } else {
@@ -92,7 +93,7 @@ const loginController = asyncHandler(async (req: Request, res: Response) => {
     });
   }
 
-  successHandler(res, 200, "logged in successfull", db_user?.dataValues);
+  successHandler(res, 200, "logged in successful", db_user?.dataValues);
 });
 
 const refreshTokenController = asyncHandler(

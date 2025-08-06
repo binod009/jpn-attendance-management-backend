@@ -9,7 +9,7 @@ export interface AuthRequest extends Request {
   user?: any;
 }
 
-export const Authentication = (
+const Authentication = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
@@ -31,3 +31,14 @@ export const Authentication = (
     throw new AppError("Invalid or expired token", 401);
   }
 };
+
+const authorizeRoles = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const role = req.user?.role ?? "";
+    if (!roles.includes(role)) {
+      return next(new AppError("forbidden:Access denied", 403));
+    }
+    next();
+  };
+};
+export { authorizeRoles, Authentication };
