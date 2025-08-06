@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
 interface AppError extends Error {
   statusCode?: number;
@@ -13,33 +13,34 @@ const errorHandler = (
   next: NextFunction
 ) => {
   let statusCode = 500;
-  let status = 'error';
-  let message = error.message || 'Something went wrong';
+  let status = "error";
+  let message = error.message || "Something went wrong";
 
   // Handle your custom ApiError
-  if ('statusCode' in error && error.statusCode) {
+  if ("statusCode" in error && error.statusCode) {
     statusCode = error.statusCode;
   }
 
-  if ('status' in error && error.status) {
-    status = error.status;
-  }
+  // removed..
+  //   if ("status" in error && error.status) {
+  //     status = error.status;
+  //   }
 
   // Example: handle duplicate key error (Postgres unique violation)
-  if ('code' in error && error.code === '23505') {
+  if ("code" in error && error.code === "23505") {
     statusCode = 400;
-    message = 'Duplicate value error';
+    message = "Duplicate value error";
   }
 
   // JWT expired error example
-  if (error.message === 'jwt expired') {
+  if (error.message === "jwt expired") {
     statusCode = 401;
-    message = 'Token expired. Please log in again.';
+    message = "Token expired. Please log in again.";
   }
 
   res.status(statusCode).json({
     statusCode,
-    status,
+    // status
     message,
   });
 };

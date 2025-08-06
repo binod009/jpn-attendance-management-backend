@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import AppError from "../utils/appError";
-import { config } from "../config/configuration";
+import config from "../config/configuration";
 
 const JWT_SECRET = config.JWT_SECRET;
 
@@ -15,6 +15,7 @@ export const Authentication = (
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization;
+  console.log("this is auth header", authHeader);
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new AppError("Authorization header missing or malformed", 401);
