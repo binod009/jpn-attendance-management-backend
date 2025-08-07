@@ -7,22 +7,22 @@ const User = userModel(sequelize);
 const Token = tokenModel(sequelize);
 const Attendance = attendanceModel(sequelize);
 // relationship
-User.hasMany(Token, {
-  foreignKey: "userId",
-});
+// User.hasMany(Token, {
+//   foreignKey: "userId",
+// });
 
-Token.belongsTo(User, {
-  foreignKey: "userId",
-});
+// Token.belongsTo(User, {
+//   foreignKey: "userId",
+// });
 
-Attendance.belongsTo(User, {
-  foreignKey: "employeeId",
-   as:"employee_details"
-});
+// Attendance.belongsTo(User, {
+//   foreignKey: "employeeId",
+//    as:"employee_details"
+// });
 
-User.hasMany(Attendance, {
-  foreignKey: 'employeeId',
- 
-})
+// User.hasMany(Attendance, {
+//   foreignKey: 'employeeId',
 
-export { User, Token ,Attendance};
+// })
+
+export { User, Token, Attendance };

@@ -3,6 +3,9 @@ import asyncHandler from "../utils/asyncHandler";
 import { Request, Response } from "express";
 import successHandler from "../utils/successHandler";
 import AppError from "../utils/appError";
+import sequelize from "../config/database";
+import { QueryTypes, Sequelize } from "sequelize";
+import { off } from "process";
 
 type statusT = "present" | "absent";
 
@@ -55,24 +58,44 @@ const getAttendanceController = asyncHandler(
     console.log(req.params);
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    const attendance_result = await Attendance.findAndCountAll({
-      where: {
-        employeeId: employeeId,
-      },
-      limit: limit,
-      offset: offset,
-      order: [["date", "DESC"]],
-      include: [
-        {
-          model: User,
-          as: "employee_details", // must match the alias used in Attendance.belongsTo(User, { as: 'employee' })
-          attributes: ["id", "name", "email", "role"], // select only required user fields
-          required: false,
-        },
-      ],
-    });
 
-    successHandler(res, 200, "successfully retrieved", attendance_result);
+    // const sql_count_query = `SELECT COUNT(*) as total from employee_attendance where employeeId = :employeeId`;
+    const query = `SELECT a.id,a."employeeId",a.status,a."timeOut",a."timeIn",a.date,
+    json_build_object(
+      'id', u.id,
+      'email', u.email,
+      'role', u.role
+    ) AS "employee_details"
+FROM employee_attendance  a
+LEFT JOIN users u ON a."employeeId" = u.id
+LIMIT :limit OFFSET :offset
+`;
+    const result = await sequelize.query(query, {
+      replacements: {
+        employeeId: employeeId,
+        limit: limit,
+        offset: offset,
+      },
+      type: QueryTypes.SELECT,
+    });
+    console.log("this is result", result);
+    // const attendance_result = await Attendance.findAndCountAll({
+    //   where: {
+    //     employeeId: employeeId,
+    //   },
+    //   limit: limit,
+    //   offset: offset,
+    //   order: [["date", "DESC"]],
+    //   include: [
+    //     {
+    //       model: User,
+    //       as: "employee_details", // must match the alias used in Attendance.belongsTo(User, { as: 'employee' })
+    //       attributes: ["id", "name", "email", "role"], // select only required user fields
+    //       required: false,
+    //     },
+    //   ],
+    // });
+    successHandler(res, 200, "successfully retrieved", result);
   }
 );
 
