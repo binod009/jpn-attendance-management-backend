@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Router } from "express";
 import { Authentication, authorizeRoles } from "../middleware/auth.middleware";
 import {
   getUserController,
@@ -8,13 +8,17 @@ import {
 } from "../controller/auth.controller";
 
 const auth_routes = Router();
-
+auth_routes.get("/", (req, res, next) => {
+  res.status(200).json({
+    msg: "done",
+  });
+});
 auth_routes.post("/register", registerUserController);
 auth_routes.post("/login", loginController);
 auth_routes.get(
   "/user",
   Authentication,
-  authorizeRoles("admin", "manager"),
+  authorizeRoles("Admin", "Manager"),
   getUserController
 );
 auth_routes.get("/refresh-token", refreshTokenController);

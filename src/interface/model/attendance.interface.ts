@@ -3,8 +3,8 @@ export interface AttendanceAttributes {
     employeeId: number;
     status: "present" | "absent",
     date: Date,
-    timeIn: Date,
-    timeOut: Date,
+    timeIn?: Date,
+    timeOut?: Date,
     created_at?: Date,
     updated_at?:Date,
 }

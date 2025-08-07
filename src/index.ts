@@ -9,9 +9,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   urlencoded({
-    extended: true,
+    extended: false,
   })
 );
+
 app.use("/api/v1", app_routes);
 
 app.use(GlobalErrorHandler);

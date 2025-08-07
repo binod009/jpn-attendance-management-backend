@@ -32,7 +32,7 @@ const tokenModel = (sequelize: Sequelize) => {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: "User", key: "id" },
+        references: { model: "users", key: "id" },
       },
       created_at: {
         type: DataTypes.DATE,
@@ -49,8 +49,8 @@ const tokenModel = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      modelName: "carts",
-      tableName: "carts",
+      modelName:"Token",
+      tableName: "token",
       createdAt: "created_at",
       updatedAt: "updated_at",
       timestamps: true,
@@ -64,8 +64,8 @@ const tokenModel = (sequelize: Sequelize) => {
         },
       },
     }
-    );
-    return Token;
+  );
+  return Token;
 };
 
 export default tokenModel;

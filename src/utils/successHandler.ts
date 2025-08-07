@@ -4,7 +4,7 @@ function successHandler(
   res: Response,
   statusCode = 200,
   message: string,
-  result: any
+  result?: any
 ) {
   return res.status(statusCode).json({
     statusCode,

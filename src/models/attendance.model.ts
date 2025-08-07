@@ -14,8 +14,8 @@ const attendanceModel = (sequelize: Sequelize) => {
     public employeeId!: number;
     public status!: "present" | "absent";
     public date!: Date;
-    public timeIn!: Date;
-    public timeOut!: Date;
+    public timeIn?: Date;
+    public timeOut?: Date;
     public created_at?: Date;
     public updated_at?: Date;
   }
@@ -31,7 +31,7 @@ const attendanceModel = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "User",
+          model: "users",
           key: "id",
         },
       },
@@ -46,11 +46,11 @@ const attendanceModel = (sequelize: Sequelize) => {
       },
       timeIn: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       timeOut: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       created_at: {
         type: DataTypes.DATE,
@@ -67,6 +67,8 @@ const attendanceModel = (sequelize: Sequelize) => {
     },
     {
       sequelize,
+      modelName: "Attendance",
+      tableName: "employee_attendance",
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
