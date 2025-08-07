@@ -60,14 +60,23 @@ const getAttendanceController = asyncHandler(
     const offset = parseInt(req.query.offset as string) || 0;
 
     // const sql_count_query = `SELECT COUNT(*) as total from employee_attendance where employeeId = :employeeId`;
-    const query = `SELECT a.id,a."employeeId",a.status,a."timeOut",a."timeIn",a.date,
-    json_build_object(
-      'id', u.id,
-      'email', u.email,
-      'role', u.role
-    ) AS "employee_details"
-FROM employee_attendance  a
+    const query = `SELECT 
+  a.id,
+  a."employeeId",
+  a.status,
+  a."timeOut",
+  a."timeIn",
+  a.date,
+  json_build_object(
+    'id', u.id,
+    'email', u.email,
+    'role', u.role
+  ) AS "employee_details",
+  COUNT(*) OVER() AS total_count
+FROM employee_attendance a
 LEFT JOIN users u ON a."employeeId" = u.id
+WHERE a."employeeId" = :employeeId
+ORDER BY a.date DESC
 LIMIT :limit OFFSET :offset
 `;
     const result = await sequelize.query(query, {
@@ -78,23 +87,6 @@ LIMIT :limit OFFSET :offset
       },
       type: QueryTypes.SELECT,
     });
-    console.log("this is result", result);
-    // const attendance_result = await Attendance.findAndCountAll({
-    //   where: {
-    //     employeeId: employeeId,
-    //   },
-    //   limit: limit,
-    //   offset: offset,
-    //   order: [["date", "DESC"]],
-    //   include: [
-    //     {
-    //       model: User,
-    //       as: "employee_details", // must match the alias used in Attendance.belongsTo(User, { as: 'employee' })
-    //       attributes: ["id", "name", "email", "role"], // select only required user fields
-    //       required: false,
-    //     },
-    //   ],
-    // });
     successHandler(res, 200, "successfully retrieved", result);
   }
 );

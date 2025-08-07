@@ -1,11 +1,13 @@
 import sequelize from "../config/database";
 import attendanceModel from "./attendance.model";
+import LeaveRequestModel from "./leave_request.model";
 import tokenModel from "./token.model";
 import userModel from "./user.model";
 
 const User = userModel(sequelize);
 const Token = tokenModel(sequelize);
 const Attendance = attendanceModel(sequelize);
+const LeaveRequest = LeaveRequestModel(sequelize);
 // relationship
 // User.hasMany(Token, {
 //   foreignKey: "userId",
@@ -25,4 +27,4 @@ const Attendance = attendanceModel(sequelize);
 
 // })
 
-export { User, Token, Attendance };
+export { User, Token, Attendance,LeaveRequest };
