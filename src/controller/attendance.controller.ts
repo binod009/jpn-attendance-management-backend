@@ -54,7 +54,7 @@ const markTimeOutController = asyncHandler(
 
 const getAttendanceController = asyncHandler(
   async (req: Request, res: Response) => {
-    const employeeId = req.params.employeeId;
+    const employeeId = req.params.employeeId || null;
     console.log(req.params);
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;

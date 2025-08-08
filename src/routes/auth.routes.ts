@@ -8,11 +8,6 @@ import {
 } from "../controller/auth.controller";
 
 const auth_routes = Router();
-auth_routes.get("/", (req, res, next) => {
-  res.status(200).json({
-    msg: "done",
-  });
-});
 auth_routes.post("/register", registerUserController);
 auth_routes.post("/login", loginController);
 auth_routes.get(

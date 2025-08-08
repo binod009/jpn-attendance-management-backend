@@ -13,12 +13,12 @@ const LeaveRequestModel = (sequelize: Sequelize) => {
     LeaveRequestCreationAttributes
   > {
     public id?: number;
-    public employeeId!: number;
+    public employee_id!: number;
     public leave_type!: TLeaveType;
     public reason!: string;
     public start_date!: string; // ISO date string like "2025-08-10"
     public end_date!: string; // ISO date string
-    public status?: TLeaveStatus; // optional during creation, defaults to 'pending'
+    public status!: TLeaveStatus; // optional during creation, defaults to 'pending'
     public created_at?: Date; // ISO datetime string
     public updated_at?: Date;
   }
@@ -29,9 +29,9 @@ const LeaveRequestModel = (sequelize: Sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      employeeId: {
+      employee_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull:false,
         references: {
           model: "users",
           key: "id",
