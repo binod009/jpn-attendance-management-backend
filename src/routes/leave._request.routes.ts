@@ -19,4 +19,5 @@ leave_request_routes.get("/list", getLeaveRequestController);
 leave_request_routes.get("/list/:employee_id", getLeaveRequestController);
 leave_request_routes.post("/update/:employee_id", leaveRequestActionController);
 
+
 export default leave_request_routes;

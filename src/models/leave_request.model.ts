@@ -6,6 +6,7 @@ import {
   TLeaveStatus,
   TLeaveType,
 } from "../interface/model/leave_requests.interface";
+import { types } from "util";
 
 const LeaveRequestModel = (sequelize: Sequelize) => {
   class LeaveRequest extends Model<
@@ -19,6 +20,7 @@ const LeaveRequestModel = (sequelize: Sequelize) => {
     public start_date!: string; // ISO date string like "2025-08-10"
     public end_date!: string; // ISO date string
     public status!: TLeaveStatus; // optional during creation, defaults to 'pending'
+    public total_leave_days?: number;
     public created_at?: Date; // ISO datetime string
     public updated_at?: Date;
   }
@@ -31,7 +33,7 @@ const LeaveRequestModel = (sequelize: Sequelize) => {
       },
       employee_id: {
         type: DataTypes.INTEGER,
-        allowNull:false,
+        allowNull: false,
         references: {
           model: "users",
           key: "id",
@@ -52,6 +54,10 @@ const LeaveRequestModel = (sequelize: Sequelize) => {
       end_date: {
         type: DataTypes.DATE,
         allowNull: false,
+      },
+      total_leave_days: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       status: {
         type: DataTypes.ENUM("pending", "approved", "rejected"),
@@ -82,6 +88,12 @@ const LeaveRequestModel = (sequelize: Sequelize) => {
         beforeCreate: (leave) => {
           leave.created_at = new Date();
           leave.updated_at = new Date();
+          const start = new Date(leave.start_date);
+          const end = new Date(leave.end_date);
+          leave.total_leave_days =
+            Math.floor(
+              (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+            ) + 1;
         },
         beforeUpdate: (leave) => {
           leave.updated_at = new Date();
@@ -93,3 +105,5 @@ const LeaveRequestModel = (sequelize: Sequelize) => {
   return LeaveRequest;
 };
 export default LeaveRequestModel;
+
+// Calculate days difference and add 1 to include both start and end dates

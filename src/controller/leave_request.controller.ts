@@ -1,10 +1,11 @@
-import { LeaveRequest } from "../models";
+import { EmployeeLeaveSummary, LeaveRequest } from "../models";
 import asyncHandler from "../utils/asyncHandler";
 import { Request, Response } from "express";
 import successHandler from "../utils/successHandler";
 import { TLeaveStatus } from "../interface/model/leave_requests.interface";
 import Leave_svc from "../services/leave.services";
 import { stat } from "fs";
+import AppError from "../utils/appError";
 
 const createLeaveRequestController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -25,17 +26,37 @@ const createLeaveRequestController = asyncHandler(
 const leaveRequestActionController = asyncHandler(
   async (req: Request, res: Response) => {
     const employee_id = parseInt(req.params.employee_id as string);
+    const id = Number(req.query.id as string);
+
     const status = req.query.status as TLeaveStatus;
-    await LeaveRequest.update(
+    // updating the leave_request
+    const [updateCount] = await LeaveRequest.update(
       {
         status,
       },
       {
         where: {
           employee_id: employee_id,
+          id: id,
+          status: "pending",
         },
       }
     );
+    
+    if (updateCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "No pending leave request found to update" });
+    }
+
+    Leave_svc.createLeaveSummary({
+      body: {
+        employee_id: employee_id,
+      },
+    }).catch((error) => {
+      console.error("Error updating leave summary:", error.message);
+    });
+
     successHandler(res, 201, "successful");
   }
 );
@@ -58,6 +79,7 @@ const getLeaveRequestController = asyncHandler(
     successHandler(res, 200, "retrieved successful", leave_result);
   }
 );
+
 export {
   createLeaveRequestController,
   leaveRequestActionController,

@@ -7,6 +7,7 @@ interface UserAttributes {
   name: string;
   email: string;
   password: string;
+  joined_date?: Date;
   role: "Admin" | "Manager" | "Employee";
   created_at?: Date;
   updated_at?: Date;
@@ -22,6 +23,7 @@ const userModel = (sequelize: Sequelize) => {
     public email!: string;
     public password!: string;
     public role!: "Admin" | "Manager" | "Employee";
+    public joined_date?: Date;
     public created_at?: Date;
     public updated_at?: Date;
   }
@@ -48,6 +50,10 @@ const userModel = (sequelize: Sequelize) => {
       password: {
         type: new DataTypes.STRING(128),
         allowNull: false,
+      },
+      joined_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
       },
       role: {
         type: DataTypes.ENUM("Admin", "Manager", "Employee"),

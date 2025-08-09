@@ -10,6 +10,7 @@ export interface LeaveRequestAttributes {
   employee_id:number;
   leave_type: TLeaveType;
   reason: string;
+  total_leave_days?: number;
   start_date: string; // ISO date string like "2025-08-10"
   end_date: string; // ISO date string
   status: TLeaveStatus; // optional during creation, defaults to 'pending'
