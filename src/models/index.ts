@@ -1,13 +1,10 @@
 import sequelize from "../config/database";
 import attendanceModel from "./attendance.model";
-import LeaveBalanceModel from "./employee_leave_summary.model";
 import LeaveRequestModel from "./leave_request.model";
 import tokenModel from "./token.model";
 import userModel from "./user.model";
-import TrackLeaveModel from "./employee_leave_summary.model";
 import EmployeeLeaveSummaryModel from "./employee_leave_summary.model";
 import PublicHolidayModel from "./public_holidays.model";
-
 const User = userModel(sequelize);
 const Token = tokenModel(sequelize);
 const Attendance = attendanceModel(sequelize);
