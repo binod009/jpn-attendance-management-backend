@@ -7,7 +7,7 @@ export type TLeaveStatus = "pending" | "approved" | "rejected";
 
 export interface LeaveRequestAttributes {
   id?: number;
-  employee_id:number;
+  employee_id: number;
   leave_type: TLeaveType;
   reason: string;
   total_leave_days?: number;

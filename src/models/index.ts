@@ -6,12 +6,14 @@ import tokenModel from "./token.model";
 import userModel from "./user.model";
 import TrackLeaveModel from "./employee_leave_summary.model";
 import EmployeeLeaveSummaryModel from "./employee_leave_summary.model";
+import PublicHolidayModel from "./public_holidays.model";
 
 const User = userModel(sequelize);
 const Token = tokenModel(sequelize);
 const Attendance = attendanceModel(sequelize);
 const LeaveRequest = LeaveRequestModel(sequelize);
 const EmployeeLeaveSummary = EmployeeLeaveSummaryModel(sequelize);
+const PublicHoliday = PublicHolidayModel(sequelize);
 // relationship
 // User.hasMany(Token, {
 //   foreignKey: "userId",
@@ -31,4 +33,11 @@ const EmployeeLeaveSummary = EmployeeLeaveSummaryModel(sequelize);
 
 // })
 
-export { User, Token, Attendance, LeaveRequest, EmployeeLeaveSummary };
+export {
+  User,
+  Token,
+  Attendance,
+  LeaveRequest,
+  EmployeeLeaveSummary,
+  PublicHoliday,
+};

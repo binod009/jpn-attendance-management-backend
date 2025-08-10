@@ -1,10 +1,10 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import sequelize from "../config/database";
+
 import {
   AttendanceAttributes,
   AttendanceCreationAttributes,
 } from "../interface/model/attendance.interface";
-
+import sequelize from "../config/database";
 const attendanceModel = (sequelize: Sequelize) => {
   class Attendance extends Model<
     AttendanceAttributes,
@@ -66,7 +66,7 @@ const attendanceModel = (sequelize: Sequelize) => {
       },
     },
     {
-      sequelize,
+     sequelize,
       modelName: "Attendance",
       tableName: "employee_attendance",
       timestamps: true,
