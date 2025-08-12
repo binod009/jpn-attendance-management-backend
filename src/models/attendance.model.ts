@@ -11,11 +11,11 @@ const attendanceModel = (sequelize: Sequelize) => {
     AttendanceCreationAttributes
   > {
     public id!: number;
-    public employeeId!: number;
+    public employee_id!: number;
     public status!: "present" | "absent";
     public date!: Date;
-    public timeIn?: Date;
-    public timeOut?: Date;
+    public time_in?: Date;
+    public time_out?: Date;
     public created_at?: Date;
     public updated_at?: Date;
   }
@@ -27,7 +27,7 @@ const attendanceModel = (sequelize: Sequelize) => {
         autoIncrement: true,
       },
 
-      employeeId: {
+      employee_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -44,11 +44,11 @@ const attendanceModel = (sequelize: Sequelize) => {
         allowNull: false,
         defaultValue: DataTypes.NOW,
       },
-      timeIn: {
+      time_in: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      timeOut: {
+      time_out: {
         type: DataTypes.DATE,
         allowNull: true,
       },

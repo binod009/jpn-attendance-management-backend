@@ -4,8 +4,7 @@ import { Request, Response } from "express";
 import successHandler from "../utils/successHandler";
 import AppError from "../utils/appError";
 import sequelize from "../config/database";
-import { QueryTypes, Sequelize } from "sequelize";
-import { off } from "process";
+import { QueryTypes } from "sequelize";
 
 type statusT = "present" | "absent";
 
@@ -19,11 +18,11 @@ const markAttendanceController = asyncHandler(
       );
     }
     const userId = req.user?.id!;
-    console.log("Request user", req.user);
+
     const attendance_result = await Attendance.create({
-      timeIn: new Date(),
+      time_in: new Date(),
       status: status as statusT,
-      employeeId: userId,
+      employee_id: userId,
       date: new Date(),
     });
     successHandler(
@@ -40,11 +39,11 @@ const markTimeOutController = asyncHandler(
   async (req: Request, res: Response) => {
     await Attendance.update(
       {
-        timeOut: new Date(),
+        time_out: new Date(),
       },
       {
         where: {
-          employeeId: req.user?.id,
+          employee_id: req.user?.id,
         },
       }
     );
@@ -54,7 +53,7 @@ const markTimeOutController = asyncHandler(
 
 const getAttendanceController = asyncHandler(
   async (req: Request, res: Response) => {
-    const employeeId = req.params.employeeId || null;
+    const employee_id = req.params.employeeId || null;
     console.log(req.params);
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
@@ -62,26 +61,26 @@ const getAttendanceController = asyncHandler(
     // const sql_count_query = `SELECT COUNT(*) as total from employee_attendance where employeeId = :employeeId`;
     const query = `SELECT 
   a.id,
-  a."employeeId",
+  a.employee_id,
   a.status,
-  a."timeOut",
-  a."timeIn",
+  a.time_out,
+  a.time_in,
   a.date,
   json_build_object(
     'id', u.id,
     'email', u.email,
     'role', u.role
-  ) AS "employee_details",
+  ) AS employee_details,
   COUNT(*) OVER() AS total_count
 FROM employee_attendance a
-LEFT JOIN users u ON a."employeeId" = u.id
-WHERE a."employeeId" = :employeeId
+LEFT JOIN users u ON a.employee_id = u.id
+WHERE a.employee_id = :employee_id
 ORDER BY a.date DESC
 LIMIT :limit OFFSET :offset
 `;
     const result = await sequelize.query(query, {
       replacements: {
-        employeeId: employeeId,
+        employee_id: employee_id,
         limit: limit,
         offset: offset,
       },

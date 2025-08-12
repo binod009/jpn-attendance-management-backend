@@ -1,10 +1,10 @@
 export interface AttendanceAttributes {
     id?: number;
-    employeeId: number;
+    employee_id: number;
     status: "present" | "absent",
     date: Date,
-    timeIn?: Date,
-    timeOut?: Date,
+    time_in?: Date,
+    time_out?: Date,
     created_at?: Date,
     updated_at?:Date,
 }
