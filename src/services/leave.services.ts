@@ -138,7 +138,7 @@ LIMIT :limit OFFSET :offset
   SELECT employee_id,
   SUM(total_leave_days) as total_leave_days_sum
   FROM leave_requests
-  WHERE employee_id = :employee_id
+  WHERE employee_id = :employee_id AND status ='approved'
   GROUP BY employee_id
   `;
 

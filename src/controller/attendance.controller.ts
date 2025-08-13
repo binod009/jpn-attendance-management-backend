@@ -61,23 +61,25 @@ const getAttendanceController = asyncHandler(
 
     // const sql_count_query = `SELECT COUNT(*) as total from employee_attendance where employeeId = :employeeId`;
     const query = `SELECT 
-  a.id,
-  a.employee_id,
-  a.status,
-  a.time_out,
-  a.time_in,
-  a.date,
-  json_build_object(
-    'id', u.id,
-    'email', u.email,
-    'role', u.role
-  ) AS employee_details,
-  COUNT(*) OVER() AS total_count
-FROM employee_attendance a
-LEFT JOIN users u ON a.employee_id = u.id
-WHERE a.employee_id = :employee_id
-ORDER BY a.date DESC
-LIMIT :limit OFFSET :offset
+    ea.employee_id,
+    json_build_object(
+        'name', u.name,
+        'email', u.email
+    ) AS employee_details,
+    COUNT(ea.id) AS total_present,
+    json_agg(
+        json_build_object(
+            'date', ea.date,
+            'time_in', ea.time_in,
+            'time_out', ea.time_out,
+            'status', ea.status
+        ) ORDER BY ea.date
+    ) AS attendance_records
+FROM employee_attendance ea
+LEFT JOIN users u ON ea.employee_id = u.id
+WHERE AND ea.status = 'present'
+AND (:employee_id is NULL OR ea.employee_id = :employee_id)
+GROUP BY ea.employee_id, u.name, u.email;
 `;
     const result = await sequelize.query(query, {
       replacements: {
@@ -87,6 +89,7 @@ LIMIT :limit OFFSET :offset
       },
       type: QueryTypes.SELECT,
     });
+    
     successHandler(res, 200, "successfully retrieved", result);
   }
 );
