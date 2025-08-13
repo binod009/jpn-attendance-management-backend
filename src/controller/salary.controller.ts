@@ -39,7 +39,7 @@ COUNT(*) AS total_present_days
 FROM employee_attendance
 where
 employee_id= 2
-AND status='present' AND EXTRACT(YEAR FROM date) = 2025 AND EXTRACT(MONTH FROM date) = 6
+AND status='present' AND EXTRACT(YEAR FROM date) = :year AND EXTRACT(MONTH FROM date) = :month
 GROUP BY employee_id, status`;
 
     //get the total leave of the employee for a month
@@ -100,7 +100,9 @@ ORDER BY year, month`;
         const { final_salary, deduction_salary } =
           salary_svc.calculateSalaryDeductionByLeave(
             employee_details?.basic_salary,
-            monthly_leave[0].total_leave_days
+            monthly_leave[0].total_leave_days <= 2
+              ? 0
+              : monthly_leave[0].total_leave_days
           );
 
         const salary_result = await EmployeeSalary.create({
@@ -110,13 +112,16 @@ ORDER BY year, month`;
           present_days: present_day_in_month[0].total_present_days,
           paid_leave_days: 2, //should be made dynamic,
           total_working_days: 30,
-          unpaid_leave_days: monthly_leave[0].total_leave_days - 2,
+          unpaid_leave_days:
+            monthly_leave[0].total_leave_days <= 2
+              ? 0
+              : monthly_leave[0].total_leave_days,
           deductions: deduction_salary,
           final_salary: final_salary,
           overtime_hours: 0,
         });
-console.log("salary_Result",salary_result)
-        console.log("monthly leave",monthly_leave);
+        console.log("salary_Result", salary_result);
+        console.log("monthly leave", monthly_leave);
         console.log("total leave days", monthly_leave[0].total_leave_days);
         console.log(
           "remaing leave days",

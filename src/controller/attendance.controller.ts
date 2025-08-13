@@ -11,6 +11,7 @@ type statusT = "present" | "absent";
 const markAttendanceController = asyncHandler(
   async (req: Request, res: Response) => {
     const { status } = req.query as { status?: string };
+    const { date } = req.body;
     if (status !== "present" && status !== "absent") {
       throw new AppError(
         "invalid status value.Must be 'present' or 'absent'",
@@ -23,7 +24,7 @@ const markAttendanceController = asyncHandler(
       time_in: new Date(),
       status: status as statusT,
       employee_id: userId,
-      date: new Date(),
+      date: date || new Date(),
     });
     successHandler(
       res,

@@ -3,6 +3,7 @@ import sequelize from "../config/database";
 
 import { EmployeeLeaveSummary } from "../models";
 import { calculateRemainingLeaveDays } from "../utils/helper";
+import { join } from "path";
 
 interface IGetLeaveService {
   params: {
@@ -63,7 +64,9 @@ LIMIT :limit OFFSET :offset
     });
     return leave_result;
   };
-  createLeaveSummary = async ({ body }: TCreateLeaveBalance): Promise<boolean> => {
+  createLeaveSummary = async ({
+    body,
+  }: TCreateLeaveBalance): Promise<boolean> => {
     const { employee_id } = body;
 
     try {
@@ -78,11 +81,15 @@ LIMIT :limit OFFSET :offset
 
       const joinedDate = userJoinedDateResult[0]?.joined_date;
       if (!joinedDate) {
-        throw new Error(`User with id ${employee_id} does not have a joined_date.`);
+        throw new Error(
+          `User with id ${employee_id} does not have a joined_date.`
+        );
       }
 
-      // 2. Calculate total leave days (assumed to be a separate DB call or business logic)
-      const totalLeaveDays = await this.employee_total_leave_days({ body: { id: employee_id } });
+      // 2. Calculate total leave days
+      const totalLeaveDays = await this.employee_total_leave_days({
+        body: { id: employee_id },
+      });
 
       // 3. Check if leave summary record already exists for this employee and current year
       const currentYear = new Date().getFullYear();
@@ -100,6 +107,8 @@ LIMIT :limit OFFSET :offset
           year: currentYear,
           total_allowed_days: calculateRemainingLeaveDays(joinedDate),
           days_taken: totalLeaveDays ?? 0,
+          // why plus 1 ? ; since in js month start with index number 0 as january
+          month: joinedDate.getMonth() + 1,
         });
       } else {
         await EmployeeLeaveSummary.update(
@@ -115,18 +124,17 @@ LIMIT :limit OFFSET :offset
       // Return false on failure, or re-throw error if you want upstream handling
       return false;
     }
-
-  }
+  };
 
   employee_total_leave_days = async ({
-  body,
-}: {
-  body: {
-    id: number;
-  };
-}) => {
-  const { id } = body;
-  const sql_query = `
+    body,
+  }: {
+    body: {
+      id: number;
+    };
+  }) => {
+    const { id } = body;
+    const sql_query = `
   SELECT employee_id,
   SUM(total_leave_days) as total_leave_days_sum
   FROM leave_requests
@@ -134,17 +142,14 @@ LIMIT :limit OFFSET :offset
   GROUP BY employee_id
   `;
 
-  const total_leave_days = await sequelize.query<LeaveDaysResult>(sql_query, {
-    replacements: {
-      employee_id: id,
-    },
-    type: QueryTypes.SELECT,
-  });
-  return parseInt(total_leave_days[0].total_leave_days_sum, 10);
-};
+    const total_leave_days = await sequelize.query<LeaveDaysResult>(sql_query, {
+      replacements: {
+        employee_id: id,
+      },
+      type: QueryTypes.SELECT,
+    });
+    return parseInt(total_leave_days[0].total_leave_days_sum, 10);
+  };
 }
-
-
-
 
 export default new LeaveServices();

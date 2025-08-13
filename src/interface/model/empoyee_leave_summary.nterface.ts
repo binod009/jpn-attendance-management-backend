@@ -2,6 +2,7 @@ export interface EmployeeLeaveSummaryAttributes {
   id?: number;
   employee_id: number;
   year: number;
+  month: number;
   total_allowed_days: number;
   days_taken: number;
   remaining_days?: number;

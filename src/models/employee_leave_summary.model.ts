@@ -15,6 +15,7 @@ const EmployeeLeaveSummaryModel = (sequelize: Sequelize) => {
     public year!: number;
     public total_allowed_days!: number;
     public days_taken!: number;
+    public month!: number;
     public remaining_days?: number;
     public created_at?: Date;
     public updated_at?: Date;
@@ -36,6 +37,10 @@ const EmployeeLeaveSummaryModel = (sequelize: Sequelize) => {
         },
       },
       year: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      month: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
